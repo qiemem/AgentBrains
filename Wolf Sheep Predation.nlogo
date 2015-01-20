@@ -6,6 +6,7 @@ globals [
   inputs
   outputs  
   brain-pool
+  layers
 ]
 
 ;; Sheep and wolves are both breeds of turtle.
@@ -33,8 +34,9 @@ to setup
   set outputs (list
     task [ if ? [ lt 30 ] ]
     task [ if ? [ rt 30 ] ]
-    ;task [ if ? [ reproduce ] ]
   )
+  
+  set layers (sentence (length inputs) (runresult middle-layers) (length outputs))
   
   ask patches [ set pcolor green ]
   ;; check GRASS? switch.
@@ -105,7 +107,7 @@ to setup-brain
     set brain-pool but-first brain-pool
   ]
   ls:set-name brain (word "Brain of " self)
-  (ls:ask brain "setup (list ?1 ?2) randomize-weights" (length inputs) (length outputs))
+  (ls:ask brain "setup ? randomize-weights" layers)
 end
 
 to-report in-vision-at [ agentset angle ]
@@ -453,23 +455,6 @@ vision
 NIL
 HORIZONTAL
 
-BUTTON
-220
-517
-629
-550
-NIL
-ask max-one-of sheep [ energy ] [ inspect self ls:show brain ]
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
 SLIDER
 105
 227
@@ -510,6 +495,34 @@ fov
 1
 NIL
 HORIZONTAL
+
+INPUTBOX
+228
+570
+383
+630
+middle-layers
+[8]
+1
+0
+String (reporter)
+
+BUTTON
+225
+519
+302
+552
+inspect
+if mouse-inside? and mouse-down? [\n  every 0.2 [\n    ask min-one-of turtles [ distancexy mouse-xcor mouse-ycor ] [\n      inspect self\n      watch-me\n      ls:show brain\n    ]\n  ]\n]
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
